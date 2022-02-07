@@ -11,8 +11,8 @@ export default function WordRow({ letters: lettersProp = "" }: WordRowProps) {
     .concat(Array(lettersRemaining).fill(""));
   return (
     <div className="grid grid-cols-5 gap-4">
-      {letters.map((char) => (
-        <CharacterBox key={char} value={char} />
+      {letters.map((char, index) => (
+        <CharacterBox key={index} value={char} />
       ))}
     </div>
   );
