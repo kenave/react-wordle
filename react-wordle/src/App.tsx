@@ -7,10 +7,13 @@ export default function App() {
         <h1 className="text-4xl text-center">Reacdle</h1>
       </header>
 
-      <main>
-        <WordRow letters="hel" />
-        <WordRow letters="hell" />
+      <main className="grid grid-rows-6 gap-4">
         <WordRow letters="hello" />
+        <WordRow letters="solar" />
+        <WordRow letters="penny" />
+        <WordRow letters="snack" />
+        <WordRow letters="stair" />
+        <WordRow letters="he" />
       </main>
     </div>
   );
