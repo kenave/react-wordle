@@ -14,6 +14,7 @@ export enum LetterState {
 export function computeGuess(guess: string, answer: string): LetterState[] {
     const result: LetterState[] = [];
     const lettersFound: string[] = [];
+    const skipIndices: number[] = [];
     
     const guessArray = guess.split('');
     const answerArray = answer.split('');
@@ -22,14 +23,22 @@ export function computeGuess(guess: string, answer: string): LetterState[] {
         return result
     }
 
-    guessArray.forEach((letter, index) => {
-        if (letter === answerArray[index]) {
-            result.push(LetterState.Match);
-        } else if (answerArray.includes(letter) && !lettersFound.includes(letter)) {
-            result.push(LetterState.Present);
+    answerArray.forEach((letter, index) => {
+        if (letter === guessArray[index]) {
+            result[index] = LetterState.Match;
             lettersFound.push(letter);
-        } else {
-            result.push(LetterState.Miss);
+            skipIndices.push(index);
+        }
+    })
+
+    guessArray.forEach((letter, index) => {
+        if (!skipIndices.includes(index)) {
+            if (answerArray.includes(letter) && !lettersFound.includes(letter)) {
+                result[index] = LetterState.Present;
+                lettersFound.push(letter);
+            } else {
+                result[index] = LetterState.Miss;
+            }
         }
     })
 
