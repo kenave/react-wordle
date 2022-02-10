@@ -1,23 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GUESS_LENGTH, useStore } from "./store";
 import { LETTER_LENGTH } from "./word-utils";
 import WordRow from "./WordRow";
 
 export default function App() {
-  const [guess, setGuess] = useState("");
   const state = useStore();
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newGuess = e.target.value;
-
-    if (newGuess.length === LETTER_LENGTH) {
-      state.addGuess(newGuess);
-      setGuess("");
-      return;
-    }
-
-    setGuess(newGuess);
-  };
+  const [guess, setGuess] = useGuess("");
+  const isGameOver = state.gameState !== "playing";
 
   let rows = [...state.rows];
 
@@ -27,21 +16,12 @@ export default function App() {
 
   const numberOfGuessesRemaining = GUESS_LENGTH - rows.length;
 
-  const isGameOver = state.gameState !== "playing";
-
   rows = rows.concat(Array(numberOfGuessesRemaining).fill(""));
   return (
     <div className="mx-auto w-96 relative">
       <header className="border-b border-gray-500 pb-2 my-2">
         <h1 className="text-4xl text-center">Reacdle</h1>
         {/* <WordRow letters={state.answer} /> */}
-        <input
-          type="text"
-          className="w-full p-2 border-2 border-gray-500"
-          value={guess}
-          onChange={onChange}
-          disabled={isGameOver}
-        ></input>
       </header>
 
       <main className="grid grid-rows-6 gap-4">
@@ -71,4 +51,68 @@ export default function App() {
       )}
     </div>
   );
+}
+
+function useGuess(
+  init: string
+): [string, React.Dispatch<React.SetStateAction<string>>] {
+  const addGuess = useStore().addGuess;
+  const [guess, setGuess] = useState(init);
+  const previousGuess = usePrevious(guess);
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    const letter = e.key;
+    console.log(letter);
+    if ((letter >= "a" && letter <= "z") || (letter >= "A" && letter <= "Z")) {
+      setGuess((curGuess) => {
+        const newGuess = letter.length === 1 ? curGuess + letter : curGuess;
+
+        if (curGuess.length === LETTER_LENGTH) {
+          return curGuess;
+        }
+        return newGuess;
+      });
+    }
+    switch (letter) {
+      case "Backspace":
+        setGuess((curGuess) => {
+          return curGuess.slice(0, -1);
+        });
+        break;
+      case "Enter":
+        setGuess((curGuess) => {
+          // console.log(curGuess);
+          if (curGuess.length === LETTER_LENGTH) {
+            return "";
+          }
+          return curGuess;
+        });
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (guess.length === 0 && previousGuess?.length === LETTER_LENGTH) {
+      addGuess(previousGuess);
+    }
+  }, [guess]);
+
+  return [guess, setGuess];
+}
+
+// source https://usehooks.com/usePrevious/
+function usePrevious<T>(value: T): T {
+  const ref: any = useRef<T>();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
 }
