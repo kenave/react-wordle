@@ -10,7 +10,7 @@ describe("Simple working test", () => {
   });
 
   it("shows empty state", () => {
-    useStore.setState({ rows: [] });
+    useStore.getState().newGame([]);
     render(<App />);
 
     expect(screen.queryByText("Game Over!")).toBeNull(); // not showing Game Over modal
@@ -19,7 +19,7 @@ describe("Simple working test", () => {
   });
 
   it("shows one row of guesses", () => {
-    useStore.setState({ rows: ["qualm"] });
+    useStore.getState().newGame(["qualm"]);
     render(<App />);
 
     expect(screen.queryByText("Game Over!")).toBeNull(); // not showing Game Over modal
@@ -27,19 +27,28 @@ describe("Simple working test", () => {
     expect(document.querySelector("main")?.textContent).toEqual("qualm"); // with empty characters
   });
 
-  it("shows game over state", () => {
-    useStore.setState({
-      rows: ["qualm", "ducks", "quack", "stuck", "prick", "humor"],
-    });
+  it("shows lost game over state", () => {
+    useStore
+      .getState()
+      .newGame(["qualm", "ducks", "quack", "stuck", "prick", "humor"]);
+    render(<App />);
+
+    expect(screen.getByText(/Game Over/i)).toBeInTheDocument(); // showing Game Over modal
+  });
+
+  it("shows won game over state", () => {
+    useStore.getState().newGame(["qualm", "ducks", "quack"]);
+    const answer = useStore.getState().answer;
+    useStore.getState().addGuess(answer);
     render(<App />);
 
     expect(screen.getByText(/Game Over/i)).toBeInTheDocument(); // showing Game Over modal
   });
 
   it("can start a new game", () => {
-    useStore.setState({
-      rows: ["qualm", "ducks", "quack", "stuck", "prick", "humor"],
-    });
+    useStore
+      .getState()
+      .newGame(["qualm", "ducks", "quack", "stuck", "prick", "humor"]);
     render(<App />);
 
     expect(screen.getByText(/Game Over/i)).toBeInTheDocument(); // showing Game Over modal
