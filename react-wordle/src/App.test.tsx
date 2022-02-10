@@ -10,7 +10,7 @@ describe("Simple working test", () => {
   });
 
   it("shows empty state", () => {
-    useStore.setState({ guesses: [] });
+    useStore.setState({ rows: [] });
     render(<App />);
 
     expect(screen.queryByText("Game Over!")).toBeNull(); // not showing Game Over modal
@@ -19,7 +19,7 @@ describe("Simple working test", () => {
   });
 
   it("shows one row of guesses", () => {
-    useStore.setState({ guesses: ["qualm"] });
+    useStore.setState({ rows: ["qualm"] });
     render(<App />);
 
     expect(screen.queryByText("Game Over!")).toBeNull(); // not showing Game Over modal
@@ -29,7 +29,7 @@ describe("Simple working test", () => {
 
   it("shows game over state", () => {
     useStore.setState({
-      guesses: ["qualm", "ducks", "quack", "stuck", "prick", "humor"],
+      rows: ["qualm", "ducks", "quack", "stuck", "prick", "humor"],
     });
     render(<App />);
 
@@ -38,7 +38,7 @@ describe("Simple working test", () => {
 
   it("can start a new game", () => {
     useStore.setState({
-      guesses: ["qualm", "ducks", "quack", "stuck", "prick", "humor"],
+      rows: ["qualm", "ducks", "quack", "stuck", "prick", "humor"],
     });
     render(<App />);
 
