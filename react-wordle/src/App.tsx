@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Keyboard from "./Keyboard";
 import { GUESS_LENGTH, useStore } from "./store";
 import { isValidWord, LETTER_LENGTH } from "./word-utils";
 import WordRow from "./WordRow";
@@ -48,6 +49,7 @@ export default function App() {
         <h1 className="text-4xl text-center">Reacdle</h1>
         {/* <WordRow letters={state.answer} /> */}
       </header>
+      <Keyboard />
 
       <main className="grid grid-rows-6 gap-4">
         {rows.map(({ guess, result }, index) => (
