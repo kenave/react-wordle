@@ -57,7 +57,7 @@ export default function App() {
             result={result}
             guessNumber={index + 1}
             className={
-              showInvalidGuess && currentRow === index ? "animate-bounce" : ""
+              showInvalidGuess && currentRow === index ? "animate-shake" : ""
             }
           />
         ))}
