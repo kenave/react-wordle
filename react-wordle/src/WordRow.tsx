@@ -3,21 +3,29 @@ import { LetterState, LETTER_LENGTH } from "./word-utils";
 interface WordRowProps {
   letters: string;
   result?: LetterState[];
+  guessNumber: number;
 }
 
 export default function WordRow({
   letters: lettersProp = "",
   result: resultProp = [],
+  guessNumber: guessNumberProp,
 }: WordRowProps) {
+  const guessNumber = guessNumberProp;
   const lettersRemaining = LETTER_LENGTH - lettersProp.length;
   const letters = lettersProp
     .split("")
     .concat(Array(lettersRemaining).fill(""));
 
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-5 gap-4" role={"row" + guessNumber}>
       {letters.map((char, index) => (
-        <CharacterBox key={index} value={char} state={resultProp[index]} />
+        <CharacterBox
+          key={index}
+          value={char}
+          state={resultProp[index]}
+          position={index + 1}
+        />
       ))}
     </div>
   );
@@ -26,15 +34,17 @@ export default function WordRow({
 interface CharacterBoxProps {
   value: string;
   state?: LetterState;
+  position: number;
 }
 
-function CharacterBox({ value, state }: CharacterBoxProps) {
+function CharacterBox({ value, state, position }: CharacterBoxProps) {
   const stateStyle = state == null ? "" : characterStateStyles[state];
   return (
     <span
       className={`inline-block border border-gray-500 
         before:inline-block before:content-['_']
         p-4 uppercase font-bold text-center ${stateStyle}`}
+      role={"letter" + position}
     >
       {value}
     </span>

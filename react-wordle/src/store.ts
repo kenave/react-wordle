@@ -13,7 +13,7 @@ interface StoreState {
   rows: GuessRow[];
   gameState: 'playing' | 'won' | 'lost';
   addGuess: (guess: string) => void;
-  newGame: (initialGuess?: string[]) => void;
+  newGame: (initialGuess?: string[], answer?: string) => void;
 }
 
 export const useStore = create<StoreState>(persist(
@@ -41,9 +41,9 @@ export const useStore = create<StoreState>(persist(
       rows: [],
       gameState: 'playing',
       addGuess,
-      newGame: (initialRows = []) => {
+      newGame: (initialRows = [], answer?: string) => {
         set({
-          answer: getRandomWord(),
+          answer: answer ? answer : getRandomWord(),
           rows: [],
           gameState: 'playing'
         });

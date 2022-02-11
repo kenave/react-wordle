@@ -26,7 +26,12 @@ export default function App() {
 
       <main className="grid grid-rows-6 gap-4">
         {rows.map(({ guess, result }, index) => (
-          <WordRow key={index} letters={guess} result={result} />
+          <WordRow
+            key={index}
+            letters={guess}
+            result={result}
+            guessNumber={index + 1}
+          />
         ))}
       </main>
 
@@ -62,7 +67,7 @@ function useGuess(
 
   const onKeyDown = (e: KeyboardEvent) => {
     const letter = e.key;
-    console.log(letter);
+    // console.log(letter);
     if ((letter >= "a" && letter <= "z") || (letter >= "A" && letter <= "Z")) {
       setGuess((curGuess) => {
         const newGuess = letter.length === 1 ? curGuess + letter : curGuess;
