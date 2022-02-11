@@ -3,8 +3,8 @@ import { LetterState, LETTER_LENGTH } from "./word-utils";
 interface WordRowProps {
   letters: string;
   result?: LetterState[];
-  guessNumber: number;
-  className: string;
+  guessNumber?: number;
+  className?: string;
 }
 
 export default function WordRow({

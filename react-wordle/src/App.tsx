@@ -71,6 +71,7 @@ export default function App() {
           left-0 right-0 top-1/4 p-6 w-3/4 mx-auto"
         >
           Game Over!
+          <WordRow letters={state.answer} />
           <button
             className="block border rounded border-green-500 bg-green-500 p-2 mt-4 mx-auto shadow"
             onClick={() => {
