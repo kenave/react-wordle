@@ -1,17 +1,42 @@
 import React, { useEffect, useRef, useState } from "react";
 import { GUESS_LENGTH, useStore } from "./store";
-import { LETTER_LENGTH } from "./word-utils";
+import { isValidWord, LETTER_LENGTH } from "./word-utils";
 import WordRow from "./WordRow";
 
 export default function App() {
   const state = useStore();
   const [guess, setGuess] = useGuess("");
+  const [showInvalidGuess, setInvalidGuess] = useState(false);
   const isGameOver = state.gameState !== "playing";
+  const addGuess = useStore().addGuess;
+  const previousGuess = usePrevious(guess);
+
+  useEffect(() => {
+    let id: number;
+    if (showInvalidGuess) {
+      id = setTimeout(() => setInvalidGuess(false), 1500);
+    }
+
+    return () => clearTimeout(id);
+  }, [showInvalidGuess]);
+
+  useEffect(() => {
+    if (guess.length === 0 && previousGuess?.length === LETTER_LENGTH) {
+      if (isValidWord(previousGuess)) {
+        addGuess(previousGuess);
+        setInvalidGuess(false);
+        return;
+      }
+      setInvalidGuess(true);
+      setGuess(previousGuess);
+    }
+  }, [guess]);
 
   let rows = [...state.rows];
 
+  let currentRow = 0;
   if (rows.length < GUESS_LENGTH) {
-    rows.push({ guess });
+    currentRow = rows.push({ guess }) - 1;
   }
 
   const numberOfGuessesRemaining = GUESS_LENGTH - rows.length;
@@ -31,6 +56,9 @@ export default function App() {
             letters={guess}
             result={result}
             guessNumber={index + 1}
+            className={
+              showInvalidGuess && currentRow === index ? "animate-bounce" : ""
+            }
           />
         ))}
       </main>
@@ -61,9 +89,7 @@ export default function App() {
 function useGuess(
   init: string
 ): [string, React.Dispatch<React.SetStateAction<string>>] {
-  const addGuess = useStore().addGuess;
   const [guess, setGuess] = useState(init);
-  const previousGuess = usePrevious(guess);
 
   const onKeyDown = (e: KeyboardEvent) => {
     const letter = e.key;
@@ -101,12 +127,6 @@ function useGuess(
       document.removeEventListener("keydown", onKeyDown);
     };
   }, []);
-
-  useEffect(() => {
-    if (guess.length === 0 && previousGuess?.length === LETTER_LENGTH) {
-      addGuess(previousGuess);
-    }
-  }, [guess]);
 
   return [guess, setGuess];
 }

@@ -57,7 +57,9 @@ describe("Simple working test", () => {
     expect(document.querySelectorAll("main div")).toHaveLength(6); // 6 rows
     expect(document.querySelector("main")?.textContent).toEqual(""); // with empty characters
   });
+});
 
+describe("Global keydown listener test", () => {
   it("can type a guess", () => {
     useStore.getState().newGame();
     render(<App />);
@@ -109,5 +111,15 @@ describe("Simple working test", () => {
     userEvent.keyboard("~!@#$%^&*()_+,./;'[[]]{{}}|\\1234567890<>?:\"`");
     const row = screen.getByRole("row1");
     expect(within(row).getByRole("letter1")?.textContent).toEqual("");
+  });
+});
+
+describe("game rules tests", () => {
+  it("does not accept invalid words", () => {
+    useStore.getState().newGame();
+    render(<App />);
+
+    userEvent.keyboard("lameo{Enter}");
+    expect(useStore.getState().rows.length).toBe(0);
   });
 });
