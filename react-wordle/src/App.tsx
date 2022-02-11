@@ -6,7 +6,7 @@ import WordRow from "./WordRow";
 
 export default function App() {
   const state = useStore();
-  const [guess, setGuess] = useGuess("");
+  const [guess, setGuess, addGuessLetter] = useGuess("");
   const [showInvalidGuess, setInvalidGuess] = useState(false);
   const isGameOver = state.gameState !== "playing";
   const addGuess = useStore().addGuess;
@@ -49,7 +49,11 @@ export default function App() {
         <h1 className="text-4xl text-center">Reacdle</h1>
         {/* <WordRow letters={state.answer} /> */}
       </header>
-      <Keyboard />
+      <Keyboard
+        onClick={(letter) => {
+          addGuessLetter(letter);
+        }}
+      />
 
       <main className="grid grid-rows-6 gap-4">
         {rows.map(({ guess, result }, index) => (
@@ -91,12 +95,14 @@ export default function App() {
 
 function useGuess(
   init: string
-): [string, React.Dispatch<React.SetStateAction<string>>] {
+): [
+  string,
+  React.Dispatch<React.SetStateAction<string>>,
+  (letter: string) => void
+] {
   const [guess, setGuess] = useState(init);
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    const letter = e.key;
-    // console.log(letter);
+  const addGuessLetter = (letter: string) => {
     if ((letter >= "a" && letter <= "z") || (letter >= "A" && letter <= "Z")) {
       setGuess((curGuess) => {
         const newGuess = letter.length === 1 ? curGuess + letter : curGuess;
@@ -115,13 +121,17 @@ function useGuess(
         break;
       case "Enter":
         setGuess((curGuess) => {
-          // console.log(curGuess);
           if (curGuess.length === LETTER_LENGTH) {
             return "";
           }
           return curGuess;
         });
     }
+  };
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    const letter = e.key;
+    addGuessLetter(letter);
   };
 
   useEffect(() => {
@@ -131,7 +141,7 @@ function useGuess(
     };
   }, []);
 
-  return [guess, setGuess];
+  return [guess, setGuess, addGuessLetter];
 }
 
 // source https://usehooks.com/usePrevious/
