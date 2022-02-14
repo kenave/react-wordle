@@ -46,7 +46,7 @@ export default function App() {
   return (
     <div className="mx-auto w-96 relative">
       <header className="border-b border-gray-500 pb-2 my-2">
-        <h1 className="text-4xl text-center">Reacdle</h1>
+        <h1 className="text-6xl text-center uppercase">wordle</h1>
         {/* <WordRow letters={state.answer} /> */}
       </header>
 
@@ -77,8 +77,10 @@ export default function App() {
           text-center
           left-0 right-0 top-1/4 p-6 w-3/4 mx-auto"
         >
-          Game Over!
-          <WordRow letters={state.answer} />
+          <div role="message" className="pb-2">
+            Game Over! The word was:
+          </div>
+          <WordRow letters={state.answer} className={""} />
           <button
             className="block border rounded border-green-500 bg-green-500 p-2 mt-4 mx-auto shadow"
             onClick={() => {

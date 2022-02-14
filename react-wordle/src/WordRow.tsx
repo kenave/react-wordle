@@ -22,8 +22,8 @@ export default function WordRow({
 
   return (
     <div
-      className={`grid grid-cols-5 gap-4 ${className}`}
-      role={"row" + guessNumber}
+      className={`grid grid-cols-5 gap-2 ${className}`}
+      role={guessNumber ? "row" + guessNumber : "answer"}
     >
       {letters.map((char, index) => (
         <CharacterBox
@@ -31,6 +31,7 @@ export default function WordRow({
           value={char}
           state={resultProp[index]}
           position={index + 1}
+          size={guessNumber ? 4 : 2}
         />
       ))}
     </div>
@@ -41,15 +42,16 @@ interface CharacterBoxProps {
   value: string;
   state?: LetterState;
   position: number;
+  size: number;
 }
 
-function CharacterBox({ value, state, position }: CharacterBoxProps) {
+function CharacterBox({ value, state, position, size }: CharacterBoxProps) {
   const stateStyle = state == null ? "" : characterStateStyles[state];
   return (
     <span
       className={`inline-block border border-gray-500 
         before:inline-block before:content-['_']
-        p-4 uppercase font-bold text-center ${stateStyle}`}
+        p-${size} uppercase font-bold text-center text-2xl ${stateStyle}`}
       role={"letter" + position}
     >
       {value}
