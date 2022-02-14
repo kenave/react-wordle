@@ -19,11 +19,18 @@ export default function Keyboard({
           <div key={rowIndex} className="flex justify-center my-2 space-x-1">
             {keyboardRow.map((key, keyIndex) => {
               let styles = "rounded font-bold uppercase py-2 flex-1";
+              let disabled = true;
               if (key != "") {
                 styles += " bg-gray-400";
+                disabled = false;
               }
               return (
-                <button key={keyIndex} className={styles} onClick={onClick}>
+                <button
+                  key={keyIndex}
+                  className={styles}
+                  onClick={onClick}
+                  disabled={disabled}
+                >
                   {key}
                 </button>
               );
